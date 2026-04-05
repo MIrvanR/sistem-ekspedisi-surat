@@ -27,26 +27,4 @@ class Ekspedisi extends Model
     {
         return $this->belongsTo(Bagian::class);
     }
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saving(function ($model) {
-
-            if (!empty($model->bukti_foto) && str_starts_with($model->bukti_foto, 'data:image')) {
-
-                $image = $model->bukti_foto;
-
-                $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
-                $image = str_replace(' ', '+', $image);
-
-                $imageName = 'bukti-ekspedisi/' . uniqid() . '.png';
-
-                \Storage::disk('public')->put($imageName, base64_decode($image));
-
-                $model->bukti_foto = $imageName;
-            }
-        });
-    }
 }

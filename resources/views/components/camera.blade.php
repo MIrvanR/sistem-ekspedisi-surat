@@ -1,57 +1,62 @@
-<div>
-    <video id="video" autoplay style="width:100%; border-radius:8px; border:1px solid #ccc;"></video>
-
-    <button type="button" onclick="takePhoto()"
-        style="margin-top:10px; padding:8px 12px; background:#2563eb; color:white; border:none; border-radius:6px;">
-        Ambil Foto
-    </button>
-
-    <canvas id="canvas" style="display:none;"></canvas>
-
-    <img id="preview" style="margin-top:10px; width:100%; border-radius:8px;" />
-</div>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const preview = document.getElementById('preview');
-
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-                video.srcObject = stream;
-            })
-            .catch(function () {
-                alert("Kamera tidak bisa diakses");
-            });
-
-    }
-
-    window.takePhoto = function () {
-
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        const context = canvas.getContext('2d');
-
-        context.drawImage(video, 0, 0);
-
-        const dataUrl = canvas.toDataURL('image/png');
-
-        preview.src = dataUrl;
-
-        const hiddenInput = document.querySelector('[name="bukti_foto"]');
-
-        if (hiddenInput) {
-            hiddenInput.value = dataUrl;
+<div x-data="{
+        // Ini adalah kunci utamanya: menghubungkan variabel 'state' dengan field 'bukti_foto' di Livewire
+        state: $wire.$entangle('{{ $getStatePath() }}'),
+        stream: null,
+        
+        initCamera() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then((mediaStream) => {
+                        this.stream = mediaStream;
+                        $refs.video.srcObject = mediaStream;
+                    })
+                    .catch((error) => {
+                        console.error('Kamera gagal diakses:', error);
+                        alert('Kamera tidak bisa diakses. Pastikan izin kamera diberikan.');
+                    });
+            }
+        },
+        
+        takePhoto() {
+            let video = $refs.video;
+            let canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            let context = canvas.getContext('2d');
+            
+            // Gambar frame video ke dalam canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Ambil data base64
+            let dataUrl = canvas.toDataURL('image/png');
+            
+            // Tampilkan di layar (preview)
+            this.state = dataUrl;
+            
+            // BARIS PENTING: Paksa Livewire untuk mencatat data foto ini
+            $wire.set('{{ $getStatePath() }}', dataUrl);
         }
+    }"
+    x-init="initCamera()"
+    class="space-y-4"
+>
 
-    }
+    <div x-show="!state" class="flex flex-col items-center">
+        <video x-ref="video" autoplay class="w-full max-w-md rounded-lg border border-gray-300 shadow-sm"></video>
+        
+        <button type="button" x-on:click="takePhoto()"
+            class="mt-3 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition">
+            Ambil Foto
+        </button>
+    </div>
 
-});
+    <div x-show="state" class="flex flex-col items-center" style="display: none;">
+        <img x-bind:src="state" class="w-full max-w-md rounded-lg border border-gray-300 shadow-sm" />
+        
+        <button type="button" x-on:click="state = null"
+            class="mt-3 px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition">
+            Ulangi Foto
+        </button>
+    </div>
 
-</script>
+</div>

@@ -45,15 +45,6 @@ class EkspedisiForm
                 Forms\Components\DatePicker::make('tanggal_kirim')
                     ->label('Tanggal Kirim')
                     ->required(),
-
-                // tempat menyimpan hasil foto
-                Forms\Components\Hidden::make('bukti_foto'),
-
-                // kamera
-                ViewField::make('camera')
-                    ->view('components.camera')
-                    ->dehydrated(false),
-
             ]);
     }
 }

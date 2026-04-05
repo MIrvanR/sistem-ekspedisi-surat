@@ -1,60 +1,77 @@
 <?php
 
-namespace App\Filament\Resources\Ekspedisis\Tables;
+namespace App\Filament\UserResources;
 
-use Filament\Tables;
+use App\Filament\UserResources\UserDashboardResource\Pages;
+use App\Models\Ekspedisi;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Actions\Action;
-use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\ViewField;
 use Illuminate\Support\Facades\Storage;
 
-class EkspedisisTable
+class UserDashboardResource extends Resource
 {
-    public static function configure(Table $table): Table
+    protected static ?string $model = Ekspedisi::class;
+
+    protected static ?string $navigationLabel = 'Dashboard Ekspedisi';
+
+    protected static ?string $modelLabel = 'Ekspedisi';
+
+    protected static ?string $pluralModelLabel = 'Ekspedisi';
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema;
+    }
+
+    public static function table(Table $table): Table
     {
         return $table
             ->columns([
-
-                Tables\Columns\TextColumn::make('tanggal_kirim')
-                    ->label('Tanggal')
+                \Filament\Tables\Columns\TextColumn::make('tanggal_kirim')
+                    ->label('Tanggal Kirim')
                     ->date(),
 
-                Tables\Columns\TextColumn::make('surat.nomor_surat')
+                \Filament\Tables\Columns\TextColumn::make('surat.nomor_surat')
                     ->label('No Agenda'),
 
-                Tables\Columns\TextColumn::make('surat.pengirim')
-                    ->label('Pengirim'),    
+                \Filament\Tables\Columns\TextColumn::make('surat.pengirim')
+                    ->label('Pengirim'),
 
-                Tables\Columns\TextColumn::make('surat.perihal')
+                \Filament\Tables\Columns\TextColumn::make('surat.perihal')
                     ->label('Perihal'),
 
-                Tables\Columns\TextColumn::make('disposisi')
+                \Filament\Tables\Columns\TextColumn::make('disposisi')
                     ->label('Disposisi'),
 
-                Tables\Columns\TextColumn::make('bagian.nama_bagian')
+                \Filament\Tables\Columns\TextColumn::make('bagian.nama_bagian')
                     ->label('Bagian Tujuan'),
 
-                ImageColumn::make('bukti_foto')
+                \Filament\Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Dikirim' => 'warning',
+                        'Diterima' => 'success',
+                        default => 'gray',
+                    }),
+
+                \Filament\Tables\Columns\ImageColumn::make('bukti_foto')
                     ->label('Foto Penerimaan')
                     ->disk('public')
                     ->visibility('public')
                     ->url(fn ($record) => $record->bukti_foto ? '/storage/' . ltrim($record->bukti_foto, '/') : null)
                     ->openUrlInNewTab()
-                    ->height(60)
+                    ->height(40)
                     ->square(),
-
-            ]) // <-- INI ADALAH PENUTUP DARI columns([])
-            
-            // --- TAMBAHKAN BLOK ACTIONS INI ---
+            ])
             ->actions([
-                // ✅ BENAR — langsung pakai alias dari 'use'
                 Action::make('ambil_foto')
-                    ->label('Kamera')
+                    ->label('📷 Ambil Foto')
                     ->icon('heroicon-o-camera')
-                    ->color('success') // Bikin tombolnya warna hijau
+                    ->color('success')
                     ->form([
                         ViewField::make('bukti_foto')
                             ->view('components.camera')
@@ -62,30 +79,36 @@ class EkspedisisTable
                     ->modalHeading('Ambil Bukti Foto Penerimaan')
                     ->modalSubmitActionLabel('Simpan Foto')
                     ->action(function ($record, array $data) {
-                        // Logika penyimpanan foto
                         if (!empty($data['bukti_foto']) && str_starts_with($data['bukti_foto'], 'data:image')) {
                             $image = $data['bukti_foto'];
                             $image = preg_replace('/^data:image\/\w+;base64,/', '', $image);
                             $image = str_replace(' ', '+', $image);
-                            
+
                             $imageName = 'bukti-ekspedisi/' . uniqid() . '.png';
                             Storage::disk('public')->put($imageName, base64_decode($image));
-                            
-                            // Update database
+
                             $record->update([
                                 'bukti_foto' => $imageName,
                                 'status' => 'Diterima'
                             ]);
                         }
                     })
-                    // Trik UX Keren: Tombol kamera akan HILANG jika surat sudah difoto!
                     ->hidden(fn ($record) => $record->bukti_foto !== null),
-
-                EditAction::make(),
-                DeleteAction::make(),
             ])
-            // --- AKHIR DARI BLOK ACTIONS ---
-
             ->defaultSort('tanggal_kirim', 'desc');
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListUserDashboards::route('/'),
+        ];
     }
 }
