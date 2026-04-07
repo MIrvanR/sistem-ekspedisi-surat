@@ -11,6 +11,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
+use App\Filament\Auth\Pages\UserLogin;
 use App\Filament\UserWidgets\EkspedisiStatsWidget;
 use App\Filament\UserWidgets\SuratListWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -27,7 +28,7 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->path('user')
-            ->login()
+            ->login(UserLogin::class)
             ->colors([
                 'primary' => Color::Blue,
             ])
