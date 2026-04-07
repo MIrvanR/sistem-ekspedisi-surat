@@ -10,6 +10,7 @@ use App\Filament\UserPages\UserDashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Widgets\AccountWidget;
 use App\Filament\UserWidgets\EkspedisiStatsWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -24,7 +25,7 @@ class UserPanelProvider extends PanelProvider
     {
         return $panel
             ->id('user')
-            ->path('')
+            ->path('user')
             ->login()
             ->colors([
                 'primary' => Color::Blue,
