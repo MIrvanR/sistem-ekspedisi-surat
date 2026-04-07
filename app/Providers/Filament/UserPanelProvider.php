@@ -12,6 +12,7 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use App\Filament\UserWidgets\EkspedisiStatsWidget;
+use App\Filament\UserWidgets\SuratListWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -39,6 +40,7 @@ class UserPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 EkspedisiStatsWidget::class,
+                SuratListWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
