@@ -17,13 +17,15 @@ class EkspedisiResource extends Resource
 {
     protected static ?string $model = Ekspedisi::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-paper-airplane';
 
     protected static ?string $navigationLabel = 'Ekspedisi';
 
     protected static ?string $modelLabel = 'Ekspedisi';
 
     protected static ?string $pluralModelLabel = 'Ekspedisi';
+    protected static string | \UnitEnum | null $navigationGroup = 'Manajemen Dokumen';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

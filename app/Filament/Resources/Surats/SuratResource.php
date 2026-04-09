@@ -23,6 +23,19 @@ class SuratResource extends Resource
     protected static ?string $modelLabel = 'Surat';
 
     protected static ?string $recordTitleAttribute = 'perihal';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-envelope-open';
+    protected static string | \UnitEnum | null $navigationGroup = 'Manajemen Dokumen';
+    protected static ?int $navigationSort = 1;
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'primary';
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -71,12 +71,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Dashboard::class,
+                // INI YANG MEMANGGIL DASHBOARD BARUMU:
+                \App\Filament\Pages\AdminDashboard::class, 
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                // KOSONGKAN KOTAK INI UNTUK MEMBUANG WIDGET DEFAULT YANG JELEK
             ])
             ->middleware([
                 EncryptCookies::class,

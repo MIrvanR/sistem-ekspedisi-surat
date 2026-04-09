@@ -23,7 +23,9 @@ class BagianResource extends Resource
     protected static ?string $modelLabel = 'Bagian';
 
     protected static ?string $recordTitleAttribute = 'nama_bagian';
-
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-building-office-2';
+    protected static string | \UnitEnum | null $navigationGroup = 'Master Data';
+    protected static ?int $navigationSort = 3;
     public static function form(Schema $schema): Schema
     {
         return BagianForm::configure($schema);
