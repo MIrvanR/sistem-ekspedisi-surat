@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\HtmlString;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,20 +32,41 @@ class AdminPanelProvider extends PanelProvider
             ->login(AdminLogin::class)
             
             // ==========================================
-            // INJEKSI BRANDING KPU PREMIUM
+            // 1. BRANDING (KPU Premium)
             // ==========================================
             ->brandName('E-DISPOS KPU')
-            ->brandLogo('https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg')
-            ->brandLogoHeight('3.5rem') // Ukuran logo proporsional
-            ->favicon('https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg') // Logo kecil di tab browser
-            
+            ->brandLogo(fn () => new HtmlString('
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg" alt="Logo KPU" style="height: 2.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                    <span style="font-family: \'Plus Jakarta Sans\', sans-serif; font-size: 1.25rem; font-weight: 900; letter-spacing: -0.025em; color: #cc1a1e;">
+                        E-DISPOS <span style="color: #0f172a;" class="dark:text-white">ADMIN</span>
+                    </span>
+                </div>
+            '))
+            ->brandLogoHeight('3rem')
+            ->favicon('https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg')
+
             // ==========================================
-            // TEMA WARNA UTAMA
+            // 2. PALET WARNA VISUAL MODERN
             // ==========================================
             ->colors([
-                // Mengubah warna default (Kuning) menjadi Merah Elegan khas KPU
-                'primary' => Color::hex('#cc1a1e'), 
+                'primary' => Color::hex('#cc1a1e'), // Merah KPU
+                'gray' => Color::Slate, // Abu-abu elegan (tidak pucat)
+                'info' => Color::Blue,
+                'success' => Color::Emerald,
+                'warning' => Color::Orange,
             ])
+
+            // ==========================================
+            // 3. TAMPILAN & LAYOUT ESTETIK (Fitur Visual Utama)
+            // ==========================================
+            ->font('Plus Jakarta Sans') // Font modern
+            ->sidebarFullyCollapsibleOnDesktop() // Sidebar mengecil menjadi IKON saja saat dilipat
+            ->maxContentWidth('screen-2xl') // Proporsi ruang tengah lebih rapi di layar besar
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->darkMode(true) // Tombol ganti tema Terang/Gelap
+            
+            // Fitur error databaseNotifications sudah dibuang jauh-jauh!
             
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
