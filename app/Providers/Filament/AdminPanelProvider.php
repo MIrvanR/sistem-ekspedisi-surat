@@ -29,15 +29,29 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(AdminLogin::class)
+            
+            // ==========================================
+            // INJEKSI BRANDING KPU PREMIUM
+            // ==========================================
+            ->brandName('E-DISPOS KPU')
+            ->brandLogo('https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg')
+            ->brandLogoHeight('3.5rem') // Ukuran logo proporsional
+            ->favicon('https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg') // Logo kecil di tab browser
+            
+            // ==========================================
+            // TEMA WARNA UTAMA
+            // ==========================================
             ->colors([
-                'primary' => Color::Amber,
+                // Mengubah warna default (Kuning) menjadi Merah Elegan khas KPU
+                'primary' => Color::hex('#cc1a1e'), 
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
+            
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,

@@ -6,20 +6,17 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use App\Filament\UserPages\UserDashboard;
+use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use App\Filament\Auth\Pages\UserLogin;
-use App\Filament\UserWidgets\EkspedisiStatsWidget;
-use App\Filament\UserWidgets\SuratListWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\HtmlString;
 
 class UserPanelProvider extends PanelProvider
 {
@@ -28,21 +25,35 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->path('user')
-            ->login(UserLogin::class)
+            ->login(\App\Filament\Auth\Pages\UserLogin::class)
+            
+            ->brandName('E-DISPOS KPU')
+            ->brandLogo(fn () => new HtmlString('
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg" alt="Logo KPU" style="height: 2.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
+                    <span style="font-family: Inter, sans-serif; font-size: 1.25rem; font-weight: 900; letter-spacing: -0.025em; color: #cc1a1e;">
+                        E-DISPOS <span style="color: #0f172a;" class="dark:text-white">KPU</span>
+                    </span>
+                </div>
+            '))
+            ->brandLogoHeight('3rem')
+            ->favicon('https://upload.wikimedia.org/wikipedia/commons/4/46/KPU_Logo.svg')
             ->colors([
-                'primary' => Color::Blue,
+                'primary' => Color::hex('#cc1a1e'),
             ])
-            ->discoverResources(in: app_path('Filament/UserResources'), for: 'App\Filament\UserResources')
-            ->discoverPages(in: app_path('Filament/UserPages'), for: 'App\Filament\UserPages')
-            ->pages([
-                UserDashboard::class,
-            ])
-            ->discoverWidgets(in: app_path('Filament/UserWidgets'), for: 'App\Filament\UserWidgets')
-            ->widgets([
-                AccountWidget::class,
-                EkspedisiStatsWidget::class,
-                SuratListWidget::class,
-            ])
+            ->font('Inter')
+            
+            // Layout tetap lebar full screen
+            ->maxContentWidth('full') 
+            ->sidebarCollapsibleOnDesktop()
+
+            ->discoverResources(in: app_path('Filament/UserResources'), for: 'App\\Filament\\UserResources')
+            ->discoverPages(in: app_path('Filament/UserPages'), for: 'App\\Filament\\UserPages')
+            ->pages([])
+            ->discoverWidgets(in: app_path('Filament/UserWidgets'), for: 'App\\Filament\\UserWidgets')
+            
+            ->widgets([]) 
+            
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -57,5 +68,7 @@ class UserPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+            
+            // TIDAK ADA LAGI CSS INJECTIONS DI SINI
     }
 }
