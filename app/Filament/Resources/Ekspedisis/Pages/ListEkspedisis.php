@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Ekspedisis\Pages;
 
 use App\Filament\Resources\Ekspedisis\EkspedisiResource;
 use Filament\Actions;
+use Filament\Actions\Action; // Pastikan ini ada agar Action cetak_laporan terbaca
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
@@ -64,9 +65,19 @@ class ListEkspedisis extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            // Tombol Cetak Laporan (Warna Hijau)
+            Action::make('cetak_laporan')
+                ->label('Cetak Laporan')
+                ->icon('heroicon-o-printer')
+                ->color('success')
+                ->url(fn () => route('cetak.laporan')) // Mengarah ke route web.php
+                ->openUrlInNewTab()
+                ->tooltip('Klik untuk mencetak atau menyimpan laporan ke PDF'),
+
+            // Tombol Buat Ekspedisi Baru (Warna Primary/Merah)
             Actions\CreateAction::make()
                 ->label('Buat Ekspedisi Baru') 
-                ->icon('heroicon-o-paper-airplane') // Ikon disamakan dengan tema
+                ->icon('heroicon-o-paper-airplane')
                 ->color('primary')
                 ->tooltip('Klik untuk mencatat pergerakan atau pengiriman dokumen baru'),
         ];

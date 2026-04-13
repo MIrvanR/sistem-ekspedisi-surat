@@ -37,20 +37,12 @@ class SuratForm
                     ])
                     ->required(),
 
-                Textarea::make('disposisi'),
-
                 FileUpload::make('file_surat')
                     ->directory('surat')
                     ->disk('public')
                     ->acceptedFileTypes(['application/pdf'])
                     ->openable()
                     ->downloadable(),
-
-                Select::make('bagians')
-                    ->relationship('bagians', 'nama_bagian')
-                    ->multiple()
-                    ->label('Bagian Tujuan')
-                    ->preload(),
 
             ]);
     }

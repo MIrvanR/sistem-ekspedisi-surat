@@ -3,7 +3,7 @@
 namespace App\Filament\UserWidgets;
 
 use App\Models\Surat;
-use Filament\Actions\Action;
+use Filament\Actions\Action; // <-- Kita kembalikan ke import aslimu yang ini
 use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,6 +30,23 @@ class SuratListWidget extends BaseWidget
                 fn (Builder $query) => $query->whereHas('bagians', fn ($query) => $query->where('bagian.id', $user->bagian_id)),
             )
             ->orderByDesc('tanggal_surat');
+    }
+
+    // =======================================================
+    // TOMBOL CETAK DI ATAS TABEL (HEADER ACTIONS)
+    // =======================================================
+    protected function getTableHeaderActions(): array
+    {
+        return [
+            // Memanggil Action menggunakan format asli
+            Action::make('cetak_laporan_bagian')
+                ->label('Cetak Arsip Bagian')
+                ->icon('heroicon-o-printer')
+                ->color('success')
+                ->url(fn () => route('cetak.laporan.bagian')) 
+                ->openUrlInNewTab()
+                ->tooltip('Klik untuk mencetak laporan surat masuk khusus untuk bagian Anda'),
+        ];
     }
 
     protected function getTableColumns(): array
@@ -92,6 +109,7 @@ class SuratListWidget extends BaseWidget
     protected function getTableActions(): array
     {
         return [
+            // Memanggil Action menggunakan format asli
             Action::make('download')
                 ->label('Unduh')
                 ->icon('heroicon-m-arrow-down-tray')
